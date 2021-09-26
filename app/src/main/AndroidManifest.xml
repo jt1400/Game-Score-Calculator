@@ -8,9 +8,15 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Assignment2">
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity
-            android:name=".MainActivity"
+            android:name=".NewGameActivity"
+            android:label="New Game Score"
+            android:exported="true"
+            android:parentActivityName=".GamesPlayedActivity"/>
+        <activity
+            android:name=".GamesPlayedActivity"
+            android:label="Games Played"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
