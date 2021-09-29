@@ -13,7 +13,8 @@ import java.util.List;
 
 public class GameManager implements Iterable<Game>{
     // Create an ArrayList to store Game objects
-    private List<Game> games = new ArrayList<>();
+    public List<Game> games = new ArrayList<>();
+    private static GameManager instance;
 
     // This method add Game object to games ArrayList
     public void add(Game game) {
@@ -23,6 +24,21 @@ public class GameManager implements Iterable<Game>{
     // This method return the number of Games stored in games
     public int getNumberOfGames(){
         return games.size();
+    }
+
+    public List<Game> getGames (){
+        return games;
+    }
+
+    private GameManager() {
+        // Private to prevent anyone else from instantiating
+    }
+
+    public static GameManager getInstance(){
+        if (instance == null){
+            instance = new GameManager();
+        }
+        return instance;
     }
 
     @Override
@@ -44,6 +60,10 @@ public class GameManager implements Iterable<Game>{
         else {
             games.remove(n - 1);
         }
+    }
+
+    public  boolean isEmpty() {
+        return games.isEmpty();
     }
 
 }
