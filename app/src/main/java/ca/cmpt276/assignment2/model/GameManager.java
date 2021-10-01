@@ -66,4 +66,8 @@ public class GameManager implements Iterable<Game>{
         return games.isEmpty();
     }
 
+    public Game get(int i){
+        return games.get(i);
+    }
+
 }

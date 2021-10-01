@@ -11,6 +11,13 @@ public class PlayerScore {
     private int sumOfCards;
     private int numberOfWagerCards;
 
+    public PlayerScore(){}
+    public PlayerScore(PlayerScore p){
+        setNumberOfCards(p.getNumberOfCards());
+        setNumberOfWagerCards(p.getNumberOfWagerCards());
+        setSumOfCards(p.getSumOfCards());
+    }
+
     // This method set the numberOfCards
     public void setNumberOfCards(int numberOfCards) {
         // If numberOfCards is set with 0, set sumOfCards and set NumberOfWagerCards with 0 too.
@@ -52,7 +59,7 @@ public class PlayerScore {
 
         // If numberOfCards is 0, set score to 0
         if (numberOfCards == 0){
-            score = 0;
+            return 0;
         }
         else {
             score = (sumOfCards - 20) * (numberOfWagerCards + 1);

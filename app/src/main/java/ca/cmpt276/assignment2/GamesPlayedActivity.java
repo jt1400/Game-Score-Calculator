@@ -12,9 +12,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -24,6 +26,7 @@ import java.util.List;
 public class GamesPlayedActivity extends AppCompatActivity {
     private GameManager gameManager;
     private List<Game> games = new ArrayList<Game>();
+    private ArrayAdapter<Game> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,15 +34,34 @@ public class GamesPlayedActivity extends AppCompatActivity {
         setContentView(R.layout.activity_games_played);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        gameManager = GameManager.getInstance();
         setupNewGameFab();
-//        TextView temp = findViewById(R.id.textView3);
-        populateGameList();
+        setupListViewListener();
+        gameManager = GameManager.getInstance();
 
+
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        setupListViewListener();
+
+        gameManager = GameManager.getInstance();
+        TextView feature = findViewById(R.id.textView);
+        feature.setText("gak kosong");
         if (!gameManager.isEmpty()){
 //            temp.setText("hah");
+            populateGameList();
             populateListView();
+
         }
+        if (gameManager.isEmpty()){
+            feature.setText("kosong");
+        }
+
+
+
 
     }
 
@@ -49,11 +71,12 @@ public class GamesPlayedActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //Intent intent = new Intent(GamesPlayedActivity.this, NewGameActivity.class);
-                Intent intent = NewGameActivity.makeIntent(GamesPlayedActivity.this);
+                Intent intent = NewGameActivity.makeIntent(GamesPlayedActivity.this, -1, -1);
                 startActivity(intent);
             }
         });
     }
+
 
     public static Intent makeIntent(Context context){
         Intent intent = new Intent(context, GamesPlayedActivity.class);
@@ -61,15 +84,32 @@ public class GamesPlayedActivity extends AppCompatActivity {
     }
 
     private void populateGameList(){
+        if(games != null){
+            games.clear();
+        }
         for (Game game: gameManager) {
             games.add(game);
         }
     }
 
     private void populateListView(){
-        ArrayAdapter<Game> adapter = new MyListAdapter();
+        adapter = new MyListAdapter();
         ListView list = (ListView) findViewById(R.id.gameListView);
         list.setAdapter(adapter);
+    }
+
+    private void setupListViewListener(){
+        ListView gamesList = (ListView) findViewById(R.id.gameListView);
+        gamesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Game clickedGame = games.get(i);
+//
+                Intent intent = NewGameActivity.makeIntent(GamesPlayedActivity.this, 1, i);
+                startActivity(intent);
+            }
+        });
+
     }
 
     private class MyListAdapter extends ArrayAdapter<Game>{
