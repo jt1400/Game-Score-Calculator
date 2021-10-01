@@ -21,4 +21,7 @@
     <string name="player_one_score">player one score</string>
     <string name="player_two_score">TextView</string>
     <string name="winner">Winner</string>
+    <string name="player_one_win">Winner is Player One</string>
+    <string name="tie_game">Tie</string>
+    <string name="player_two_win">Winner is Player Two</string>
 </resources>

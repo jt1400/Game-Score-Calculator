@@ -16,14 +16,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GamesPlayedActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
     private GameManager gameManager;
     private List<Game> games = new ArrayList<Game>();
     private ArrayAdapter<Game> adapter;
@@ -49,19 +48,8 @@ public class GamesPlayedActivity extends AppCompatActivity {
 
         gameManager = GameManager.getInstance();
         TextView feature = findViewById(R.id.textView);
-        feature.setText("gak kosong");
-        if (!gameManager.isEmpty()){
-//            temp.setText("hah");
-            populateGameList();
-            populateListView();
-
-        }
-        if (gameManager.isEmpty()){
-            feature.setText("kosong");
-        }
-
-
-
+        populateGameList();
+        populateListView();
 
     }
 
@@ -71,7 +59,7 @@ public class GamesPlayedActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //Intent intent = new Intent(GamesPlayedActivity.this, NewGameActivity.class);
-                Intent intent = NewGameActivity.makeIntent(GamesPlayedActivity.this, -1, -1);
+                Intent intent = NewGameActivity.makeIntent(MainActivity.this, -1, -1);
                 startActivity(intent);
             }
         });
@@ -79,7 +67,7 @@ public class GamesPlayedActivity extends AppCompatActivity {
 
 
     public static Intent makeIntent(Context context){
-        Intent intent = new Intent(context, GamesPlayedActivity.class);
+        Intent intent = new Intent(context, MainActivity.class);
         return intent;
     }
 
@@ -105,7 +93,7 @@ public class GamesPlayedActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Game clickedGame = games.get(i);
 //
-                Intent intent = NewGameActivity.makeIntent(GamesPlayedActivity.this, 1, i);
+                Intent intent = NewGameActivity.makeIntent(MainActivity.this, 1, i);
                 startActivity(intent);
             }
         });
@@ -114,7 +102,7 @@ public class GamesPlayedActivity extends AppCompatActivity {
 
     private class MyListAdapter extends ArrayAdapter<Game>{
         public MyListAdapter(){
-            super(GamesPlayedActivity.this, R.layout.games, games);
+            super(MainActivity.this, R.layout.games_view, games);
         }
 
         @NonNull
@@ -123,7 +111,7 @@ public class GamesPlayedActivity extends AppCompatActivity {
 //
             View gamesView = convertView;
             if (gamesView == null){
-                gamesView = getLayoutInflater().inflate(R.layout.games, parent, false);
+                gamesView = getLayoutInflater().inflate(R.layout.games_view, parent, false);
             }
 
             Game currentGame = games.get(position);

@@ -129,4 +129,14 @@ public class Game{
         return gameResultString;
     }
 
+    public void updateGame(Game updatedGame){
+        playerScores.clear();
+        for(int i = 0; i < numberOfPLayers; i++){
+            PlayerScore player = new PlayerScore(updatedGame.getPlayer(i));
+            playerScores.add(player);
+        }
+
+
+    }
+
 }

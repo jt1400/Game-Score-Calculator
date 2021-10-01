@@ -41,6 +41,10 @@ public class GameManager implements Iterable<Game>{
         return instance;
     }
 
+    public void updateGameIndex (Game game, int i){
+        games.get(i).updateGame(game);
+    }
+
     @Override
     public Iterator<Game> iterator() {
         return games.iterator();

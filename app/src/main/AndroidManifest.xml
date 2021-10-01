@@ -13,9 +13,9 @@
             android:name=".NewGameActivity"
             android:label="New Game Score"
             android:exported="true"
-            android:parentActivityName=".GamesPlayedActivity"/>
+            android:parentActivityName=".MainActivity"/>
         <activity
-            android:name=".GamesPlayedActivity"
+            android:name=".MainActivity"
             android:label="Games Played"
             android:exported="true">
             <intent-filter>
