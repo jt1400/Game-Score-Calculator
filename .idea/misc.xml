@@ -3,16 +3,19 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/Jocelyn Tandrea/AndroidStudioProjects/assignment2/app/src/main/res/layout/activity_games_played.xml" value="0.21" />
-        <entry key="..\:/Users/Jocelyn Tandrea/AndroidStudioProjects/assignment2/app/src/main/res/layout/activity_main.xml" value="0.18" />
+        <entry key="..\:/Users/Jocelyn Tandrea/AndroidStudioProjects/assignment2/app/src/main/res/layout/activity_games_played.xml" value="0.2725423728813559" />
+        <entry key="..\:/Users/Jocelyn Tandrea/AndroidStudioProjects/assignment2/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/Users/Jocelyn Tandrea/AndroidStudioProjects/assignment2/app/src/main/res/layout/activity_main3.xml" value="0.22" />
         <entry key="..\:/Users/Jocelyn Tandrea/AndroidStudioProjects/assignment2/app/src/main/res/layout/activity_new_game.xml" value="0.33" />
         <entry key="..\:/Users/Jocelyn Tandrea/AndroidStudioProjects/assignment2/app/src/main/res/layout/activity_new_game2.xml" value="0.25" />
         <entry key="..\:/Users/Jocelyn Tandrea/AndroidStudioProjects/assignment2/app/src/main/res/layout/activity_newgame.xml" value="0.217578125" />
         <entry key="..\:/Users/Jocelyn Tandrea/AndroidStudioProjects/assignment2/app/src/main/res/layout/activity_second.xml" value="0.33" />
         <entry key="..\:/Users/Jocelyn Tandrea/AndroidStudioProjects/assignment2/app/src/main/res/layout/cancel_delete_layout.xml" value="0.33" />
+        <entry key="..\:/Users/Jocelyn Tandrea/AndroidStudioProjects/assignment2/app/src/main/res/layout/cancel_edit_dialog_layout.xml" value="0.209375" />
         <entry key="..\:/Users/Jocelyn Tandrea/AndroidStudioProjects/assignment2/app/src/main/res/layout/games.xml" value="0.1350210970464135" />
-        <entry key="..\:/Users/Jocelyn Tandrea/AndroidStudioProjects/assignment2/app/src/main/res/menu/menu_new_game.xml" value="0.18" />
+        <entry key="..\:/Users/Jocelyn Tandrea/AndroidStudioProjects/assignment2/app/src/main/res/layout/games_view.xml" value="0.33" />
+        <entry key="..\:/Users/Jocelyn Tandrea/AndroidStudioProjects/assignment2/app/src/main/res/layout/message_dialog_layout.xml" value="0.209375" />
+        <entry key="..\:/Users/Jocelyn Tandrea/AndroidStudioProjects/assignment2/app/src/main/res/menu/menu_new_game.xml" value="0.33" />
       </map>
     </option>
   </component>

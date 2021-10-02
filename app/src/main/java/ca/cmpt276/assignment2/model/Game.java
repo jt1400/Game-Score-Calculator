@@ -18,6 +18,7 @@ public class Game{
 
     private int numberOfPLayers;
     private final LocalDateTime localDateTime;
+    private int iconID;
     // Create an ArrayList to store PlayerScore objects
     public List<PlayerScore> playerScores = new ArrayList<>();
 
@@ -129,6 +130,18 @@ public class Game{
         return gameResultString;
     }
 
+    public String getScores(){
+        String gameResultString = Integer.toString(playerScores.get(0).getScore());
+        StringBuilder gameResult = new StringBuilder();
+        // A loop to add every player, excluding player 1 scores separated by vs to gameResult
+        for (int i = 1; i < numberOfPLayers; i++){
+            gameResult.append(" vs ");
+            gameResult.append(playerScores.get(i).getScore());
+        }
+        gameResultString += gameResult.toString();
+        return gameResultString;
+    }
+
     public void updateGame(Game updatedGame){
         playerScores.clear();
         for(int i = 0; i < numberOfPLayers; i++){
@@ -137,6 +150,13 @@ public class Game{
         }
 
 
+    }
+
+    public void setIconID(int iconID){
+        this.iconID = iconID;
+    }
+    public int getIconID(){
+        return iconID;
     }
 
 }

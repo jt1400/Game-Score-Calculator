@@ -14,11 +14,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,14 +32,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_games_played);
+        setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setupNewGameFab();
         setupListViewListener();
         gameManager = GameManager.getInstance();
-
-
 
     }
 
@@ -45,11 +45,25 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         setupListViewListener();
+        TextView noGames = (TextView) findViewById(R.id.noGames);
+        TextView tips = (TextView) findViewById(R.id.tips);
+        ImageView arrow = (ImageView) findViewById(R.id.imageView6);
 
         gameManager = GameManager.getInstance();
-        TextView feature = findViewById(R.id.textView);
+
         populateGameList();
         populateListView();
+        if(gameManager.isEmpty()){
+            noGames.setVisibility(View.VISIBLE);
+            tips.setVisibility(View.VISIBLE);
+            arrow.setVisibility(View.VISIBLE);
+        }
+        else {
+
+            noGames.setVisibility(View.GONE);
+            tips.setVisibility(View.GONE);
+            arrow.setVisibility(View.GONE);
+        }
 
     }
 
@@ -76,6 +90,15 @@ public class MainActivity extends AppCompatActivity {
             games.clear();
         }
         for (Game game: gameManager) {
+            if(game.getWinner().equals("Player 1 won")){
+                game.setIconID(R.drawable.ic_baseline_looks_one_24);
+            }
+            else if(game.getWinner().equals("Player 2 won")){
+                game.setIconID(R.drawable.ic_baseline_looks_two_24);
+            }
+            else {
+                game.setIconID(R.drawable.ic_round_drag_handle_24);
+            }
             games.add(game);
         }
     }
@@ -116,8 +139,18 @@ public class MainActivity extends AppCompatActivity {
 
             Game currentGame = games.get(position);
 
-            TextView gameDescription = (TextView) gamesView.findViewById(R.id.gamedescription);
-            gameDescription.setText(currentGame.toString());
+            TextView gameWinner = (TextView) gamesView.findViewById(R.id.gameWinner);
+            gameWinner.setText(currentGame.getWinner());
+
+            TextView playerScoreTV = (TextView) gamesView.findViewById(R.id.playerScores);
+            playerScoreTV.setText("Player 1 vs Player 2 scores: " + currentGame.getScores());
+
+            DateTimeFormatter format = DateTimeFormatter.ofPattern("MMM d @ HH:mm a");
+            TextView itemDateTV = (TextView) gamesView.findViewById(R.id.gameDate);
+            itemDateTV.setText(currentGame.getLocalDateTime().format(format));
+
+            ImageView icon = (ImageView) gamesView.findViewById(R.id.resultImageView);
+            icon.setImageResource(currentGame.getIconID());
 
             return gamesView;
 //            return super.getView(position, convertView, parent);

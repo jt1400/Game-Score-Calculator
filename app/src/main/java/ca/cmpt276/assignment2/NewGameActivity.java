@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,11 +34,13 @@ public class NewGameActivity extends AppCompatActivity {
     private PlayerScore playerTwo;
     int mode;
     int position;
+    private boolean dataChanged;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_game);
+        dataChanged = false;
 
         Toolbar toolbar = findViewById(R.id.toolbar2);
         Button deleteGame = (Button) findViewById(R.id.deleteBtn);
@@ -111,7 +114,7 @@ public class NewGameActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 FragmentManager manager = getSupportFragmentManager();
-                MessageFragment dialog = new MessageFragment();
+                CancelDeleteFragment dialog = new CancelDeleteFragment();
                 dialog.show(manager, "MessageDialog");
 
             }
@@ -140,6 +143,7 @@ public class NewGameActivity extends AppCompatActivity {
                     createPlayerTwo();
                 }
                 setWinner();
+                dataChanged = true;
             }
         });
     }
@@ -257,22 +261,21 @@ public class NewGameActivity extends AppCompatActivity {
         EditText playerTwoNumOfWagerCards = (EditText) findViewById(R.id.playerTwoNumOfWagerCards);
 
         switch (item.getItemId()) {
-            case R.id.home:
-                this.finish();
-                break;
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+                //break;
             case R.id.action_save:
-                if(userFinishInput(playerOneNumOfCards, playerOneSumOfCards, playerOneNumOfWagerCards) && userFinishInput(playerTwoNumOfCards, playerTwoSumOfCards, playerTwoNumOfWagerCards)){
+                if (userFinishInput(playerOneNumOfCards, playerOneSumOfCards, playerOneNumOfWagerCards) && userFinishInput(playerTwoNumOfCards, playerTwoSumOfCards, playerTwoNumOfWagerCards)) {
                     game.addPlayer(playerOne);
                     game.addPlayer(playerTwo);
-                    if(mode == 1){
+                    if (mode == 1) {
                         gameManager.updateGameIndex(game, position);
-                    }
-                    else if (mode == -1) {
+                    } else if (mode == -1) {
                         gameManager.add(game);
                     }
                     this.finish();
-                }
-                else{
+                } else {
                     Toast.makeText(getApplicationContext(), "Please enter the correct information for the game", Toast.LENGTH_LONG).show();
                 }
                 break;
@@ -282,6 +285,22 @@ public class NewGameActivity extends AppCompatActivity {
 
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(dataChanged){
+            FragmentManager manager = getSupportFragmentManager();
+            CancelEditFragment dialog = new CancelEditFragment();
+            dialog.show(manager, "MessageDialog");
+            Log.i("TAG", "gak gagal");
+        }
+        else {
+            Log.i("TAG", "gagal");
+                    this.finish();
+        }
+
+        //super.onBackPressed();
     }
 
     public static Intent makeIntent(Context context, int mode, int position ){

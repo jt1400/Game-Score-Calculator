@@ -11,35 +11,33 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
-public class MessageFragment extends AppCompatDialogFragment {
+public class CancelEditFragment extends AppCompatDialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        // Create the view to.show
         View v = LayoutInflater.from(getActivity())
-                .inflate(R.layout.cancel_delete_layout, null);
+                .inflate(R.layout.cancel_edit_dialog_layout, null);
 
-        //Create a button listener
         DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 switch (i) {
                     case DialogInterface.BUTTON_POSITIVE:
-                        ((NewGameActivity) getActivity()).deleteGame();
                         ((NewGameActivity) getActivity()).finish();
                         break;
                     case DialogInterface.BUTTON_NEGATIVE:
                         break;
                 }
+
             }
         };
 
-        //Build the alert dialog
         return new AlertDialog.Builder(getActivity())
-                    .setTitle("Delete Game")
+                .setTitle("Discard Changes")
                 .setView(v)
                 .setPositiveButton(android.R.string.yes, listener)
                 .setNegativeButton(android.R.string.cancel, listener)
                 .create();
+//        return super.onCreateDialog(savedInstanceState);
     }
 }
