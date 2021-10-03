@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:text="Tap the + button to add game "
+        android:text="@string/tips"
         app:layout_constraintBottom_toTopOf="@+id/arrowImageView"
         app:layout_constraintEnd_toEndOf="@+id/arrowImageView"
         app:layout_constraintHorizontal_bias="0.86"
@@ -29,13 +29,14 @@
         app:layout_constraintStart_toEndOf="@+id/featuresTextView"
         app:layout_constraintTop_toTopOf="@+id/NewGameFloatingActionButton"
         app:layout_constraintVertical_bias="0.35000002"
-        app:srcCompat="@drawable/ic_action_name" />
+        app:srcCompat="@drawable/ic_action_name"
+        android:contentDescription="@string/arrow" />
 
     <TextView
         android:id="@+id/noGamesTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="No game created yet"
+        android:text="@string/no_game_created"
         app:layout_constraintBottom_toTopOf="@+id/featuresTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -62,9 +63,9 @@
         android:layout_marginBottom="5dp"
         android:layout_marginStart="5dp"
         android:text="@string/optional_features"
+        android:textSize="11sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:textSize="11sp"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout2"
@@ -96,7 +97,8 @@
         app:fabCustomSize="70dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:ignore="SpeakableTextPresentCheck" />
+        tools:ignore="SpeakableTextPresentCheck"
+        android:contentDescription="@string/add_game" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

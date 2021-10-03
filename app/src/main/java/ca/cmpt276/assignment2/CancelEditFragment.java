@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,18 +18,15 @@ public class CancelEditFragment extends AppCompatDialogFragment {
         View v = LayoutInflater.from(getActivity())
                 .inflate(R.layout.cancel_edit_dialog_layout, null);
 
-        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                switch (i) {
-                    case DialogInterface.BUTTON_POSITIVE:
-                        ((NewGameActivity) getActivity()).finish();
-                        break;
-                    case DialogInterface.BUTTON_NEGATIVE:
-                        break;
-                }
-
+        DialogInterface.OnClickListener listener = (dialogInterface, i) -> {
+            switch (i) {
+                case DialogInterface.BUTTON_POSITIVE:
+                    getActivity().finish();
+                    break;
+                case DialogInterface.BUTTON_NEGATIVE:
+                    break;
             }
+
         };
 
         return new AlertDialog.Builder(getActivity())

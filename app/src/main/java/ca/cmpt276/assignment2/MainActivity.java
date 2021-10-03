@@ -61,12 +61,9 @@ public class MainActivity extends AppCompatActivity {
     // This method setup the new game floating action button to open the new game activity
     private void setupNewGameFab(){
         FloatingActionButton newGameFab = findViewById(R.id.NewGameFloatingActionButton);
-        newGameFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = NewGameActivity.makeIntent(MainActivity.this, false, -1);
-                startActivity(intent);
-            }
+        newGameFab.setOnClickListener(view -> {
+            Intent intent = NewGameActivity.makeIntent(MainActivity.this, false, -1);
+            startActivity(intent);
         });
     }
 
@@ -137,12 +134,9 @@ public class MainActivity extends AppCompatActivity {
     // This method setup each item in listview to respond to user's click
     private void setupListViewListener(){
         ListView gamesListView = findViewById(R.id.gameListView);
-        gamesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = NewGameActivity.makeIntent(MainActivity.this, true, i);
-                startActivity(intent);
-            }
+        gamesListView.setOnItemClickListener((adapterView, view, i, l) -> {
+            Intent intent = NewGameActivity.makeIntent(MainActivity.this, true, i);
+            startActivity(intent);
         });
     }
 
@@ -194,6 +188,7 @@ public class MainActivity extends AppCompatActivity {
 
             Game currentGame = games.get(position);
 
+            // set up game ListView item
             TextView gameWinnerTV = gamesView.findViewById(R.id.gameWinnerTextView);
             gameWinnerTV.setText(currentGame.getWinner());
 

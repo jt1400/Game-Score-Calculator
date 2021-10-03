@@ -7,9 +7,9 @@
         android:id="@+id/cancelEditMessage"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:gravity="center"
         android:textSize="14sp"
-        android:text="Are you sure you want to discard all changes?" />
+        android:text="@string/are_you_sure_you_want_to_discard_all_changes" />
 </RelativeLayout>

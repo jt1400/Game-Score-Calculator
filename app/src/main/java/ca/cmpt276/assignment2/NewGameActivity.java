@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -58,6 +59,7 @@ public class NewGameActivity extends AppCompatActivity {
 
         dataChanged = false;
 
+        // setup toolbar
         Toolbar toolbar = findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -145,14 +147,11 @@ public class NewGameActivity extends AppCompatActivity {
     // This method setup the delete game button
     private void setupDeleteGameBtn(){
         Button deleteGame = findViewById(R.id.deleteBtn);
-        deleteGame.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // show dialog to confirm user want to delete game
-                FragmentManager manager = getSupportFragmentManager();
-                CancelDeleteFragment dialog = new CancelDeleteFragment();
-                dialog.show(manager, "MessageDialog");
-            }
+        deleteGame.setOnClickListener(view -> {
+            // show dialog to confirm user want to delete game
+            FragmentManager manager = getSupportFragmentManager();
+            CancelDeleteFragment dialog = new CancelDeleteFragment();
+            dialog.show(manager, "MessageDialog");
         });
     }
 
@@ -212,7 +211,7 @@ public class NewGameActivity extends AppCompatActivity {
             playerScoreTV.setText(Integer.toString(player.getScore()));
         }
         else if (numCards == 0 && sumCards != -1 && numWager != -1){
-            playerScoreTV.setText("");
+            playerScoreTV.setText("-");
         }
         else if (numCards != -1 && sumCards != -1 && numWager != -1){
             player.setNumberOfCards(numCards);
@@ -221,7 +220,7 @@ public class NewGameActivity extends AppCompatActivity {
             playerScoreTV.setText(Integer.toString(player.getScore()));
         }
         else {
-            playerScoreTV.setText("");
+            playerScoreTV.setText("-");
         }
     }
 
@@ -290,10 +289,11 @@ public class NewGameActivity extends AppCompatActivity {
             } else {
                 gameManager.add(game);
             }
-
             this.finish();
         } else {
-            Toast.makeText(getApplicationContext(), "Please enter the correct information for the game", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext()
+                    , "Please enter the valid information for the game.", Toast.LENGTH_LONG).show();
+
         }
     }
 
