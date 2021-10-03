@@ -8,35 +8,35 @@
 
 
     <TextView
-        android:id="@+id/tips"
+        android:id="@+id/tipsTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:text="Tap the + button to add game "
-        app:layout_constraintBottom_toTopOf="@+id/arrow"
-        app:layout_constraintEnd_toEndOf="@+id/arrow"
+        app:layout_constraintBottom_toTopOf="@+id/arrowImageView"
+        app:layout_constraintEnd_toEndOf="@+id/arrowImageView"
         app:layout_constraintHorizontal_bias="0.86"
-        app:layout_constraintStart_toStartOf="@+id/arrow"
+        app:layout_constraintStart_toStartOf="@+id/arrowImageView"
         android:textSize="14sp"/>
 
     <ImageView
-        android:id="@+id/arrow"
+        android:id="@+id/arrowImageView"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        app:layout_constraintBottom_toTopOf="@+id/featuresTV"
-        app:layout_constraintEnd_toStartOf="@+id/floatingActionButton"
+        app:layout_constraintBottom_toTopOf="@+id/featuresTextView"
+        app:layout_constraintEnd_toStartOf="@+id/NewGameFloatingActionButton"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/featuresTV"
-        app:layout_constraintTop_toTopOf="@+id/floatingActionButton"
+        app:layout_constraintStart_toEndOf="@+id/featuresTextView"
+        app:layout_constraintTop_toTopOf="@+id/NewGameFloatingActionButton"
         app:layout_constraintVertical_bias="0.35000002"
         app:srcCompat="@drawable/ic_action_name" />
 
     <TextView
-        android:id="@+id/noGames"
+        android:id="@+id/noGamesTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="No game created yet"
-        app:layout_constraintBottom_toTopOf="@+id/featuresTV"
+        app:layout_constraintBottom_toTopOf="@+id/featuresTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/gameListView"
@@ -46,7 +46,7 @@
         android:id="@+id/gameListView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/featuresTV"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -56,7 +56,7 @@
     </ListView>
 
     <TextView
-        android:id="@+id/featuresTV"
+        android:id="@+id/featuresTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
@@ -83,7 +83,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton"
+        android:id="@+id/NewGameFloatingActionButton"
         style="c"
         android:layout_width="70dp"
         android:layout_height="70dp"

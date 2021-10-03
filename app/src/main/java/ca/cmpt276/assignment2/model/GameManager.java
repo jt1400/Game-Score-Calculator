@@ -26,10 +26,6 @@ public class GameManager implements Iterable<Game>{
         return games.size();
     }
 
-    public List<Game> getGames (){
-        return games;
-    }
-
     private GameManager() {
         // Private to prevent anyone else from instantiating
     }
@@ -41,9 +37,7 @@ public class GameManager implements Iterable<Game>{
         return instance;
     }
 
-    public static void replaceInstance(GameManager newGameManager){
-        instance = newGameManager;
-    }
+
 
     public void updateGameIndex (Game game, int i){
         games.get(i).updateGame(game);

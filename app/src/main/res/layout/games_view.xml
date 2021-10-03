@@ -6,46 +6,46 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/resultImageView"
+        android:id="@+id/gameIconImageView"
         android:layout_width="100dp"
         android:layout_height="100dp"
         tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
-        android:id="@+id/gameDate"
+        android:id="@+id/gameDateTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/resultImageView"
+        android:layout_alignBottom="@+id/gameIconImageView"
         android:layout_alignParentTop="true"
         android:layout_marginStart="10dp"
         android:layout_marginTop="70dp"
-        android:layout_toEndOf="@+id/resultImageView"
+        android:layout_toEndOf="@+id/gameIconImageView"
         android:text="date" />
 
     <TextView
-        android:id="@+id/gameWinner"
+        android:id="@+id/gameWinnerTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/resultImageView"
+        android:layout_alignBottom="@+id/gameIconImageView"
         android:layout_alignParentLeft="false"
         android:layout_alignParentTop="true"
         android:layout_marginBottom="65dp"
         android:layout_marginLeft="163dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
-        android:layout_toEndOf="@+id/resultImageView"
+        android:layout_toEndOf="@+id/gameIconImageView"
         android:gravity="center_vertical"
         android:text="Winner"
         android:textSize="20sp" />
 
     <TextView
-        android:id="@+id/playerScores"
+        android:id="@+id/playerScoresTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/resultImageView"
+        android:layout_alignBottom="@+id/gameIconImageView"
         android:layout_alignParentTop="true"
         android:layout_marginStart="10dp"
         android:layout_marginTop="45dp"
-        android:layout_toEndOf="@+id/resultImageView"
+        android:layout_toEndOf="@+id/gameIconImageView"
         android:text="score" />
 </RelativeLayout>

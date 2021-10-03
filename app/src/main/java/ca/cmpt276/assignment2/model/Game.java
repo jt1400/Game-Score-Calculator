@@ -20,6 +20,7 @@ public class Game{
     private final LocalDateTime localDateTime;
     private int iconID;
     private String localDateTimeString;
+
     // Create an ArrayList to store PlayerScore objects
     private List<PlayerScore> playerScores = new ArrayList<>();
 
@@ -29,7 +30,7 @@ public class Game{
 
     public Game(Game game) {
         this.localDateTime = game.getLocalDateTime();
-        
+
         this.numberOfPLayers = game.numberOfPLayers;
     }
 
@@ -75,7 +76,6 @@ public class Game{
         }
         else{
             return "Player 2 won";
-
         }
     }
 
@@ -104,6 +104,7 @@ public class Game{
         return gameResultString;
     }
 
+    // This methos returm the scores of the players separated by vs
     public String getScores(){
         String gameResultString = Integer.toString(playerScores.get(0).getScore());
         StringBuilder gameResult = new StringBuilder();

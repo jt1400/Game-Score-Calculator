@@ -9,12 +9,12 @@ import ca.cmpt276.assignment2.model.Game;
 import ca.cmpt276.assignment2.model.GameManager;
 import ca.cmpt276.assignment2.model.PlayerScore;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,16 +26,26 @@ import android.widget.Toast;
 import java.time.format.DateTimeFormatter;
 
 public class NewGameActivity extends AppCompatActivity {
-    private static final String EXTRA_MODE = "ca.cmpt276.assignment2 - mode";
+    private static final String EXTRA_EDIT = "ca.cmpt276.assignment2 - edit";
     private static final String EXTRA_POSITION = "ca.cmpt276.assignment2 - position";
+
+    // Data passed from MainActivity
+    boolean edit;
+    int position;
 
     private GameManager gameManager;
     private Game game;
     private PlayerScore playerOne;
     private PlayerScore playerTwo;
-    int mode;
-    int position;
     private boolean dataChanged;
+
+    // This method support creating intent and passing data from other activity
+    public static Intent makeIntent(Context context, boolean edit, int position ){
+        Intent intent = new Intent(context, NewGameActivity.class);
+        intent.putExtra(EXTRA_EDIT, edit);
+        intent.putExtra(EXTRA_POSITION, position);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,45 +60,46 @@ public class NewGameActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
-        ActionBar ab = getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
-        Button deleteGame = (Button) findViewById(R.id.deleteBtn);
+        Button deleteGame = findViewById(R.id.deleteBtn);
         setupDeleteGameBtn();
 
-        if (mode == -1) {
+        if (!edit) {
             deleteGame.setVisibility(View.GONE);
+
             game = new Game(2);
             playerOne = new PlayerScore();
             playerTwo = new PlayerScore();
-
         }
-        else if (mode == 1) {
+        else {
             deleteGame.setVisibility(View.VISIBLE);
 
-            ab.setTitle("Edit Game Score");
+            actionBar.setTitle("Edit Game Score");
             setupEditGamePage();
         }
 
-
         setupDateGameCreated();
         setupAllTextChangedListener();
-
     }
 
+    // This method set the date game created textView
     private void setupDateGameCreated(){
-        TextView dateGameCreated = findViewById(R.id.dateGameCreated);
+        TextView dateGameCreated = findViewById(R.id.dateGameCreatedTextView);
         DateTimeFormatter format = DateTimeFormatter.ofPattern("MMM d @ HH:mm a");
         dateGameCreated.setText(game.getLocalDateTime().format(format));
     }
-    private void setupAllTextChangedListener(){
-        EditText playerOneNumOfCardsET = (EditText) findViewById(R.id.playerOneNumOfCards);
-        EditText playerOneSumOfCardsET = (EditText) findViewById(R.id.playerOneSumOfCards);
-        EditText playerOneNumOfWagerCardsET = (EditText) findViewById(R.id.playerOneNumOfWagerCards);
 
-        EditText playerTwoNumOfCardsET = (EditText) findViewById(R.id.playerTwoNumOfCards);
-        EditText playerTwoSumOfCardsET = (EditText) findViewById(R.id.playerTwoSumOfCards);
-        EditText playerTwoNumOfWagerCardsET = (EditText) findViewById(R.id.playerTwoNumOfWagerCards);
+    // This method setup text changed listener for all EditText in NewGameActivity
+    private void setupAllTextChangedListener(){
+        EditText playerOneNumOfCardsET = findViewById(R.id.playerOneNumOfCards);
+        EditText playerOneSumOfCardsET = findViewById(R.id.playerOneSumOfCards);
+        EditText playerOneNumOfWagerCardsET = findViewById(R.id.playerOneNumOfWagerCards);
+
+        EditText playerTwoNumOfCardsET = findViewById(R.id.playerTwoNumOfCards);
+        EditText playerTwoSumOfCardsET = findViewById(R.id.playerTwoSumOfCards);
+        EditText playerTwoNumOfWagerCardsET = findViewById(R.id.playerTwoNumOfWagerCards);
 
         setupTextChangedListener(playerOneNumOfCardsET, 1);
         setupTextChangedListener(playerOneSumOfCardsET, 1);
@@ -98,62 +109,71 @@ public class NewGameActivity extends AppCompatActivity {
         setupTextChangedListener(playerTwoNumOfWagerCardsET, 2);
     }
 
+    // This method setup the new game activity so that user can edit game
+    @SuppressLint("SetTextI18n")
     private void setupEditGamePage(){
-        TextView playerOneScoreTV = (TextView) findViewById(R.id.playerOneScore);
-        TextView playerTwoScoreTV = (TextView) findViewById(R.id.playertwoScore);
+        TextView playerOneScoreTV = findViewById(R.id.playerOneScore);
+        TextView playerTwoScoreTV = findViewById(R.id.playertwoScore);
 
-        EditText playerOneNumOfCardsET = (EditText) findViewById(R.id.playerOneNumOfCards);
-        EditText playerOneSumOfCardsET = (EditText) findViewById(R.id.playerOneSumOfCards);
-        EditText playerOneNumOfWagerCardsET = (EditText) findViewById(R.id.playerOneNumOfWagerCards);
+        EditText playerOneNumOfCardsET = findViewById(R.id.playerOneNumOfCards);
+        EditText playerOneSumOfCardsET = findViewById(R.id.playerOneSumOfCards);
+        EditText playerOneNumOfWagerCardsET = findViewById(R.id.playerOneNumOfWagerCards);
 
-        EditText playerTwoNumOfCardsET = (EditText) findViewById(R.id.playerTwoNumOfCards);
-        EditText playerTwoSumOfCardsET = (EditText) findViewById(R.id.playerTwoSumOfCards);
-        EditText playerTwoNumOfWagerCardsET = (EditText) findViewById(R.id.playerTwoNumOfWagerCards);
+        EditText playerTwoNumOfCardsET = findViewById(R.id.playerTwoNumOfCards);
+        EditText playerTwoSumOfCardsET = findViewById(R.id.playerTwoSumOfCards);
+        EditText playerTwoNumOfWagerCardsET = findViewById(R.id.playerTwoNumOfWagerCards);
 
         game = new Game(gameManager.get(position));
         playerOne = new PlayerScore(gameManager.get(position).getPlayer(0));
         playerTwo = new PlayerScore(gameManager.get(position).getPlayer(1));
 
-        playerOneNumOfCardsET.setText("" + playerOne.getNumberOfCards());
-        playerOneSumOfCardsET.setText("" + playerOne.getSumOfCards());
-        playerOneNumOfWagerCardsET.setText("" + playerOne.getNumberOfWagerCards());
-        playerTwoNumOfCardsET.setText("" + playerTwo.getNumberOfCards());
-        playerTwoSumOfCardsET.setText("" + playerTwo.getSumOfCards());
-        playerTwoNumOfWagerCardsET.setText("" + playerTwo.getNumberOfWagerCards());
-        playerOneScoreTV.setText("" + playerOne.getScore());
-        playerTwoScoreTV.setText("" + playerTwo.getScore());
+        // Set the text in EditText to match the game that user want to edit
+        playerOneNumOfCardsET.setText(Integer.toString(playerOne.getNumberOfCards()));
+        playerOneSumOfCardsET.setText(Integer.toString(playerOne.getSumOfCards()));
+        playerOneNumOfWagerCardsET.setText(Integer.toString(playerOne.getNumberOfWagerCards()));
+
+        playerTwoNumOfCardsET.setText(Integer.toString(playerTwo.getNumberOfCards()));
+        playerTwoSumOfCardsET.setText(Integer.toString(playerTwo.getSumOfCards()));
+        playerTwoNumOfWagerCardsET.setText(Integer.toString(playerTwo.getNumberOfWagerCards()));
+
+        playerOneScoreTV.setText(Integer.toString(playerOne.getScore()));
+        playerTwoScoreTV.setText(Integer.toString(playerTwo.getScore()));
+
         setWinner();
     }
 
+    // This method setup the delete game button
     private void setupDeleteGameBtn(){
-        Button deleteGame = (Button) findViewById(R.id.deleteBtn);
+        Button deleteGame = findViewById(R.id.deleteBtn);
         deleteGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // show dialog to confirm user want to delete game
                 FragmentManager manager = getSupportFragmentManager();
                 CancelDeleteFragment dialog = new CancelDeleteFragment();
                 dialog.show(manager, "MessageDialog");
-
             }
         });
     }
 
+    // This method delete the game chosen by user
     public void deleteGame(){
         gameManager.delete(position + 1);
         finish();
     }
 
+    // This method setup text changed listener for EditText
     private void setupTextChangedListener(EditText editText, int playerNumber){
-        TextView playerOneScoreTV = (TextView) findViewById(R.id.playerOneScore);
-        TextView playerTwoScoreTV = (TextView) findViewById(R.id.playertwoScore);
+        TextView playerOneScoreTV = findViewById(R.id.playerOneScore);
+        TextView playerTwoScoreTV = findViewById(R.id.playertwoScore);
 
-        EditText playerOneNumOfCardsET = (EditText) findViewById(R.id.playerOneNumOfCards);
-        EditText playerOneSumOfCardsET = (EditText) findViewById(R.id.playerOneSumOfCards);
-        EditText playerOneNumOfWagerCardsET = (EditText) findViewById(R.id.playerOneNumOfWagerCards);
+        EditText playerOneNumOfCardsET = findViewById(R.id.playerOneNumOfCards);
+        EditText playerOneSumOfCardsET = findViewById(R.id.playerOneSumOfCards);
+        EditText playerOneNumOfWagerCardsET = findViewById(R.id.playerOneNumOfWagerCards);
 
-        EditText playerTwoNumOfCardsET = (EditText) findViewById(R.id.playerTwoNumOfCards);
-        EditText playerTwoSumOfCardsET = (EditText) findViewById(R.id.playerTwoSumOfCards);
-        EditText playerTwoNumOfWagerCardsET = (EditText) findViewById(R.id.playerTwoNumOfWagerCards);
+        EditText playerTwoNumOfCardsET = findViewById(R.id.playerTwoNumOfCards);
+        EditText playerTwoSumOfCardsET = findViewById(R.id.playerTwoSumOfCards);
+        EditText playerTwoNumOfWagerCardsET = findViewById(R.id.playerTwoNumOfWagerCards);
 
         editText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -165,10 +185,12 @@ public class NewGameActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 if(playerNumber == 1) {
-                    createPlayer(playerOneNumOfCardsET, playerOneSumOfCardsET, playerOneNumOfWagerCardsET, playerOneScoreTV, playerOne);
+                    createPlayer(playerOneNumOfCardsET, playerOneSumOfCardsET,
+                            playerOneNumOfWagerCardsET, playerOneScoreTV, playerOne);
                 }
                 else if(playerNumber == 2){
-                    createPlayer(playerTwoNumOfCardsET, playerTwoSumOfCardsET, playerTwoNumOfWagerCardsET, playerTwoScoreTV, playerTwo);
+                    createPlayer(playerTwoNumOfCardsET, playerTwoSumOfCardsET,
+                            playerTwoNumOfWagerCardsET, playerTwoScoreTV, playerTwo);
                 }
                 setWinner();
                 dataChanged = true;
@@ -176,43 +198,38 @@ public class NewGameActivity extends AppCompatActivity {
         });
     }
 
-
-
-    private void createPlayer(EditText NumOfCardsET, EditText SumOfCardsET, EditText NumOfWagerCardsET, TextView playerScoreTV, PlayerScore player){
-
+    // This method create a PlayerScore object
+    @SuppressLint("SetTextI18n")
+    private void createPlayer(EditText NumOfCardsET, EditText SumOfCardsET,
+                              EditText NumOfWagerCardsET, TextView playerScoreTV, PlayerScore player){
         int numCards = extractIntFromEditText(NumOfCardsET);
         int sumCards = extractIntFromEditText(SumOfCardsET);
         int numWager = extractIntFromEditText(NumOfWagerCardsET);
 
-        if (numCards == 0 && sumCards != -1 && numWager != -1){
-            playerScoreTV.setText("");
-        }
-        else if (numCards == 0 && sumCards <= 0 && numWager <= 0){
+
+        if (numCards == 0 && sumCards <= 0 && numWager <= 0) {
             player.setNumberOfCards(numCards);
-            playerScoreTV.setText("" + player.getScore());
+            playerScoreTV.setText(Integer.toString(player.getScore()));
+        }
+        else if (numCards == 0 && sumCards != -1 && numWager != -1){
+            playerScoreTV.setText("");
         }
         else if (numCards != -1 && sumCards != -1 && numWager != -1){
             player.setNumberOfCards(numCards);
             player.setSumOfCards(sumCards);
             player.setNumberOfWagerCards(numWager);
-            playerScoreTV.setText("" +player.getScore());
+            playerScoreTV.setText(Integer.toString(player.getScore()));
         }
         else {
             playerScoreTV.setText("");
         }
     }
 
+    // This method set the winner TextView with the winner of the game
     private void setWinner() {
         TextView winner = findViewById(R.id.winner);
 
-        EditText playerOneNumOfCards = (EditText) findViewById(R.id.playerOneNumOfCards);
-        EditText playerOneSumOfCards = (EditText) findViewById(R.id.playerOneSumOfCards);
-        EditText playerOneNumOfWagerCards = (EditText) findViewById(R.id.playerOneNumOfWagerCards);
-
-        EditText playerTwoNumOfCards = (EditText) findViewById(R.id.playerTwoNumOfCards);
-        EditText playerTwoSumOfCards = (EditText) findViewById(R.id.playerTwoSumOfCards);
-        EditText playerTwoNumOfWagerCards = (EditText) findViewById(R.id.playerTwoNumOfWagerCards);
-        if(userFinishInput(playerOneNumOfCards, playerOneSumOfCards, playerOneNumOfWagerCards) && userFinishInput(playerTwoNumOfCards, playerTwoSumOfCards, playerTwoNumOfWagerCards)){
+        if(userFinishInput()){
             if (playerOne.getScore() > playerTwo.getScore()) {
                 winner.setText(R.string.player_one_win);
             }
@@ -225,18 +242,6 @@ public class NewGameActivity extends AppCompatActivity {
         }
     }
 
-    private boolean userFinishInput(EditText a, EditText b, EditText c){
-        int numCards = extractIntFromEditText(a);
-        int sumCards = extractIntFromEditText(b);
-        int numWager = extractIntFromEditText(c);
-
-        if(numCards == 0 && sumCards <= 0 && numWager <= 0) {
-            return true;
-        }
-        else return numCards != -1 && sumCards != -1 && numWager != -1;
-    }
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         //inflate the menu
@@ -246,8 +251,6 @@ public class NewGameActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
-
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
@@ -264,30 +267,6 @@ public class NewGameActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void saveGame(){
-        EditText playerOneNumOfCards = (EditText) findViewById(R.id.playerOneNumOfCards);
-        EditText playerOneSumOfCards = (EditText) findViewById(R.id.playerOneSumOfCards);
-        EditText playerOneNumOfWagerCards = (EditText) findViewById(R.id.playerOneNumOfWagerCards);
-
-        EditText playerTwoNumOfCards = (EditText) findViewById(R.id.playerTwoNumOfCards);
-        EditText playerTwoSumOfCards = (EditText) findViewById(R.id.playerTwoSumOfCards);
-        EditText playerTwoNumOfWagerCards = (EditText) findViewById(R.id.playerTwoNumOfWagerCards);
-        if (userFinishInput(playerOneNumOfCards, playerOneSumOfCards, playerOneNumOfWagerCards) && userFinishInput(playerTwoNumOfCards, playerTwoSumOfCards, playerTwoNumOfWagerCards)) {
-            game.addPlayer(playerOne);
-            game.addPlayer(playerTwo);
-            if (mode == 1) {
-                gameManager.updateGameIndex(game, position);
-            } else if (mode == -1) {
-                gameManager.add(game);
-            }
-            this.finish();
-        } else {
-            Toast.makeText(getApplicationContext(), "Please enter the correct information for the game", Toast.LENGTH_LONG).show();
-        }
-    }
-
-
-
     @Override
     public void onBackPressed() {
         if(dataChanged){
@@ -300,23 +279,80 @@ public class NewGameActivity extends AppCompatActivity {
         }
     }
 
-    public static Intent makeIntent(Context context, int mode, int position ){
-        Intent intent = new Intent(context, NewGameActivity.class);
-        intent.putExtra(EXTRA_MODE, mode);
-        intent.putExtra(EXTRA_POSITION, position);
-        return intent;
+    // This method save the game
+    public void saveGame(){
+        if (userFinishInput()) {
+            game.addPlayer(playerOne);
+            game.addPlayer(playerTwo);
+
+            if (edit) {
+                gameManager.updateGameIndex(game, position);
+            } else {
+                gameManager.add(game);
+            }
+
+            this.finish();
+        } else {
+            Toast.makeText(getApplicationContext(), "Please enter the correct information for the game", Toast.LENGTH_LONG).show();
+        }
     }
 
-    private void extractDataFromIntent(){
-        Intent intent = getIntent();
+    // This method check if the user has finish entering data for the game
+    private boolean userFinishInput() {
+        EditText playerOneNumOfCardsET = findViewById(R.id.playerOneNumOfCards);
+        EditText playerOneSumOfCardsET = findViewById(R.id.playerOneSumOfCards);
+        EditText playerOneNumOfWagerCardsET = findViewById(R.id.playerOneNumOfWagerCards);
 
-        mode = intent.getIntExtra(EXTRA_MODE, -1);
-        position = intent.getIntExtra(EXTRA_POSITION, -1);
+        EditText playerTwoNumOfCardsET = findViewById(R.id.playerTwoNumOfCards);
+        EditText playerTwoSumOfCardsET = findViewById(R.id.playerTwoSumOfCards);
+        EditText playerTwoNumOfWagerCardsET = findViewById(R.id.playerTwoNumOfWagerCards);
+
+        int playerOneNumberOfCards = extractIntFromEditText(playerOneNumOfCardsET);
+        int playerOneSumOfCards = extractIntFromEditText(playerOneSumOfCardsET);
+        int playerOneNumberOfWagerCards = extractIntFromEditText(playerOneNumOfWagerCardsET);
+
+        int playerTwoNumberOfCards = extractIntFromEditText(playerTwoNumOfCardsET);
+        int playerTwoSumOfCards = extractIntFromEditText(playerTwoSumOfCardsET);
+        int playerTwoNumberOfWagerCards = extractIntFromEditText(playerTwoNumOfWagerCardsET);
+
+        boolean playerOneDone;
+        boolean playerTwoDone;
+
+        if (playerOneNumberOfCards == 0 && playerOneSumOfCards <= 0 && playerOneNumberOfWagerCards <= 0) {
+            playerOneDone = true;
+        }
+        else if (playerOneNumberOfCards == 0 && playerOneSumOfCards != -1 && playerOneNumberOfWagerCards != -1){
+            playerOneDone = false;
+        }
+        else{
+            playerOneDone = (playerOneNumberOfCards != -1 && playerOneSumOfCards != -1 && playerOneNumberOfWagerCards != -1);
+        }
+
+        if (playerTwoNumberOfCards == 0 && playerTwoSumOfCards <= 0 && playerTwoNumberOfWagerCards <= 0) {
+            playerTwoDone = true;
+        }
+        else if (playerTwoNumberOfCards == 0 && playerTwoSumOfCards != -1 && playerTwoNumberOfWagerCards != -1){
+            playerTwoDone = false;
+        }
+        else{
+            playerTwoDone = (playerTwoNumberOfCards != -1 && playerTwoSumOfCards != -1 && playerTwoNumberOfWagerCards != -1);
+        }
+
+        return playerOneDone && playerTwoDone;
     }
 
+    // This method extract number entered by user from EitText
     private int extractIntFromEditText(EditText e){
         if (e.getText().toString().isEmpty())
             return -1;
         return Integer.parseInt(e.getText().toString());
+    }
+
+    // This method get data passed from other activity
+    private void extractDataFromIntent(){
+        Intent intent = getIntent();
+
+        edit = intent.getBooleanExtra(EXTRA_EDIT, false);
+        position = intent.getIntExtra(EXTRA_POSITION, -1);
     }
 }

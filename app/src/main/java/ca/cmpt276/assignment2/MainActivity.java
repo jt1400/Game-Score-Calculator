@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar;
 import ca.cmpt276.assignment2.model.Game;
 import ca.cmpt276.assignment2.model.GameManager;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -35,11 +36,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     private GameManager gameManager;
-    private List<Game> games = new ArrayList<Game>();
+    private List<Game> games = new ArrayList<>();
     private ArrayAdapter<Game> adapter;
 
     @Override
@@ -54,13 +54,40 @@ public class MainActivity extends AppCompatActivity {
         setupNewGameFab();
 
         gameManager = GameManager.getInstance();
+
         getLastGamesFromSharedPreference();
-        refreshGameManager();
     }
 
-    private void refreshGameManager(){
-        for(Game game:games){
-            gameManager.add(game);
+    // This method setup the new game floating action button to open the new game activity
+    private void setupNewGameFab(){
+        FloatingActionButton newGameFab = findViewById(R.id.NewGameFloatingActionButton);
+        newGameFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = NewGameActivity.makeIntent(MainActivity.this, false, -1);
+                startActivity(intent);
+            }
+        });
+    }
+
+    // Code taken from https://www.javaguides.net/2019/11/gson-localdatetime-localdate.html
+    // This method get the games created by user during their previous use of the app
+    private void getLastGamesFromSharedPreference() {
+        SharedPreferences mPrefs = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        Gson gson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class,
+                new LocalDateTimeDeserializer()).create();
+        String json = mPrefs.getString("myGames", "");
+        Type type = new TypeToken<ArrayList<Game>>() {}.getType();
+        if (games == null) {
+            games = new ArrayList<>();
+        }
+
+        games = gson.fromJson(json, type);
+
+        if(gameManager.isEmpty()) {
+            for (Game game : games) {
+                gameManager.add(game);
+            }
         }
     }
 
@@ -78,82 +105,14 @@ public class MainActivity extends AppCompatActivity {
         storeGamesToSharedPreferences();
     }
 
-
-
-    class LocalDateTimeSerializer implements JsonSerializer<LocalDateTime> {
-        @Override
-        public JsonElement serialize(LocalDateTime localDate, Type typeOfSrc, JsonSerializationContext context) {
-            DateTimeFormatter format = DateTimeFormatter.ofPattern("d::MMM::uuuu HH::mm::ss");
-            return new JsonPrimitive(localDate.format(format));
-        }
-        
-    }
-
-    class LocalDateTimeDeserializer implements JsonDeserializer<LocalDateTime>{
-        @Override
-        public LocalDateTime deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-                throws JsonParseException {
-                return LocalDateTime.parse(json.getAsString(),
-                        DateTimeFormatter.ofPattern("d::MMM::uuuu HH::mm::ss"));
-        }
-    }
-    private void storeGamesToSharedPreferences() {
-        SharedPreferences mPrefs = getSharedPreferences("shared preferences", MODE_PRIVATE);
-
-        SharedPreferences.Editor prefsEditor = mPrefs.edit();
-        Gson gson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer())
-                .create();
-        String json = gson.toJson(games);
-        prefsEditor.putString("myGames", json);
-        prefsEditor.apply();
-
-    }
-
-    private void getLastGamesFromSharedPreference() {
-        SharedPreferences mPrefs = getSharedPreferences("shared preferences", MODE_PRIVATE);
-        Gson gson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer()).create();
-        String json = mPrefs.getString("myGames", "");
-        Type type = new TypeToken<ArrayList<Game>>() {
-        }.getType();
-        games = gson.fromJson(json, type);
-
-        if (games == null) {
-            games = new ArrayList<>();
-        }
-    }
-
-    private void setupEmptyState(){
-        TextView noGames = (TextView) findViewById(R.id.noGames);
-        TextView tips = (TextView) findViewById(R.id.tips);
-        ImageView arrow = (ImageView) findViewById(R.id.arrow);
-
-        if(gameManager.isEmpty()){
-            noGames.setVisibility(View.VISIBLE);
-            tips.setVisibility(View.VISIBLE);
-            arrow.setVisibility(View.VISIBLE);
-        }
-        else {
-            noGames.setVisibility(View.GONE);
-            tips.setVisibility(View.GONE);
-            arrow.setVisibility(View.GONE);
-        }
-    }
-
-    private void setupNewGameFab(){
-        FloatingActionButton newGameFab = findViewById(R.id.floatingActionButton);
-        newGameFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = NewGameActivity.makeIntent(MainActivity.this, -1, -1);
-                startActivity(intent);
-            }
-        });
-    }
-
+    // This method populate the games list with user created game from gameManager
+    // This method also assign an icon for each game
     private void populateGameList(){
+        // If there are games in the games list, remove all games before adding new games
         if(games != null){
             games.clear();
         }
+
         for (Game game: gameManager) {
             if(game.getWinner().equals("Player 1 won")){
                 game.setIconID(R.drawable.ic_baseline_looks_one_24);
@@ -168,35 +127,66 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // This method populate the listview with the games in game list
     private void populateListView(){
         adapter = new MyListAdapter();
-        ListView list = (ListView) findViewById(R.id.gameListView);
+        ListView list = findViewById(R.id.gameListView);
         list.setAdapter(adapter);
     }
 
+    // This method setup each item in listview to respond to user's click
     private void setupListViewListener(){
-        ListView gamesList = (ListView) findViewById(R.id.gameListView);
-        gamesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        ListView gamesListView = findViewById(R.id.gameListView);
+        gamesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Game clickedGame = games.get(i);
-//
-                Intent intent = NewGameActivity.makeIntent(MainActivity.this, 1, i);
+                Intent intent = NewGameActivity.makeIntent(MainActivity.this, true, i);
                 startActivity(intent);
             }
         });
+    }
 
+    // This method set up the empty state
+    private void setupEmptyState(){
+        TextView noGames = findViewById(R.id.noGamesTextView);
+        TextView tips = findViewById(R.id.tipsTextView);
+        ImageView arrow = findViewById(R.id.arrowImageView);
+
+        if(gameManager.isEmpty()){
+            noGames.setVisibility(View.VISIBLE);
+            tips.setVisibility(View.VISIBLE);
+            arrow.setVisibility(View.VISIBLE);
+        }
+        else {
+            noGames.setVisibility(View.GONE);
+            tips.setVisibility(View.GONE);
+            arrow.setVisibility(View.GONE);
+        }
+    }
+
+    // Code taken from https://www.javaguides.net/2019/11/gson-localdatetime-localdate.html
+    // This method save the created games in games list
+    private void storeGamesToSharedPreferences() {
+        SharedPreferences mPrefs = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = mPrefs.edit();
+
+        Gson gson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class,
+                new LocalDateTimeSerializer()).create();
+        String json = gson.toJson(games);
+
+        prefsEditor.putString("myGames", json);
+        prefsEditor.apply();
     }
 
     private class MyListAdapter extends ArrayAdapter<Game>{
+
         public MyListAdapter(){
             super(MainActivity.this, R.layout.games_view, games);
         }
-
+        @SuppressLint("SetTextI18n")
         @NonNull
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-//
             View gamesView = convertView;
             if (gamesView == null){
                 gamesView = getLayoutInflater().inflate(R.layout.games_view, parent, false);
@@ -204,21 +194,45 @@ public class MainActivity extends AppCompatActivity {
 
             Game currentGame = games.get(position);
 
-            TextView gameWinner = (TextView) gamesView.findViewById(R.id.gameWinner);
-            gameWinner.setText(currentGame.getWinner());
+            TextView gameWinnerTV = gamesView.findViewById(R.id.gameWinnerTextView);
+            gameWinnerTV.setText(currentGame.getWinner());
 
-            TextView playerScoreTV = (TextView) gamesView.findViewById(R.id.playerScores);
+            TextView playerScoreTV = gamesView.findViewById(R.id.playerScoresTextView);
             playerScoreTV.setText("Player 1 vs Player 2 scores: " + currentGame.getScores());
 
             DateTimeFormatter format = DateTimeFormatter.ofPattern("MMM d @ HH:mm a");
-            TextView itemDateTV = (TextView) gamesView.findViewById(R.id.gameDate);
+            TextView itemDateTV = gamesView.findViewById(R.id.gameDateTextView);
             itemDateTV.setText(currentGame.getLocalDateTime().format(format));
 
-            ImageView icon = (ImageView) gamesView.findViewById(R.id.resultImageView);
-            icon.setImageResource(currentGame.getIconID());
+            ImageView iconIV = gamesView.findViewById(R.id.gameIconImageView);
+            iconIV.setImageResource(currentGame.getIconID());
 
             return gamesView;
         }
+
     }
+
+    // Code taken from https://www.javaguides.net/2019/11/gson-localdatetime-localdate.html
+    // This method implement a Json serializer for LocalDateTime object
+    class LocalDateTimeSerializer implements JsonSerializer<LocalDateTime>{
+        @Override
+        public JsonElement serialize(LocalDateTime localDate, Type typeOfSrc,
+                                     JsonSerializationContext context){
+            DateTimeFormatter format = DateTimeFormatter.ofPattern("d::MMM::uuuu HH::mm::ss");
+            return new JsonPrimitive(localDate.format(format));
+        }
+    }
+
+    // Code taken from https://www.javaguides.net/2019/11/gson-localdatetime-localdate.html
+    // This method implement a Json deserializer for LocalDateTime object
+    class LocalDateTimeDeserializer implements JsonDeserializer<LocalDateTime>{
+        @Override
+        public LocalDateTime deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext
+                context) throws JsonParseException {
+            return LocalDateTime.parse(json.getAsString(),
+                    DateTimeFormatter.ofPattern("d::MMM::uuuu HH::mm::ss"));
+        }
+    }
+
 
 }
