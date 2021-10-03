@@ -24,4 +24,5 @@
     <string name="player_one_win">Winner is Player One</string>
     <string name="tie_game">Tie</string>
     <string name="player_two_win">Winner is Player Two</string>
+    <string name="optional_features">Optional Features:\n1.Edit and Delete Game\n2. Complex List View\n3. Confirm on Cancel Edit\n4. Save Data\n5. Empty State</string>
 </resources>

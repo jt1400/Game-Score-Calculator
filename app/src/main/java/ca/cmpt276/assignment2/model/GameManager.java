@@ -13,7 +13,7 @@ import java.util.List;
 
 public class GameManager implements Iterable<Game>{
     // Create an ArrayList to store Game objects
-    public List<Game> games = new ArrayList<>();
+    private List<Game> games = new ArrayList<>();
     private static GameManager instance;
 
     // This method add Game object to games ArrayList
@@ -39,6 +39,10 @@ public class GameManager implements Iterable<Game>{
             instance = new GameManager();
         }
         return instance;
+    }
+
+    public static void replaceInstance(GameManager newGameManager){
+        instance = newGameManager;
     }
 
     public void updateGameIndex (Game game, int i){

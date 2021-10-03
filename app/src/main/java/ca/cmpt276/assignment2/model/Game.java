@@ -19,8 +19,9 @@ public class Game{
     private int numberOfPLayers;
     private final LocalDateTime localDateTime;
     private int iconID;
+    private String localDateTimeString;
     // Create an ArrayList to store PlayerScore objects
-    public List<PlayerScore> playerScores = new ArrayList<>();
+    private List<PlayerScore> playerScores = new ArrayList<>();
 
     public void deletePlayers(){
         playerScores.clear();
@@ -28,6 +29,7 @@ public class Game{
 
     public Game(Game game) {
         this.localDateTime = game.getLocalDateTime();
+        
         this.numberOfPLayers = game.numberOfPLayers;
     }
 
@@ -64,34 +66,6 @@ public class Game{
 
     // This method return a string that shows the winner of the game
     public String getWinner() {
-//        // Set player 1 (the PlayerScore object with index 0 in playerScores ArrayList)
-//        // score as the temporary highest score
-//        int highestScore = playerScores.get(0).getScore();
-//
-//        int j = 0;
-//        for (int i = 1; i < numberOfPLayers; i++){
-//            // If player with index i score is higher highestScore,
-//            // replace highestScore with player i+1 score
-//            if (playerScores.get(i).getScore() > highestScore){
-//                highestScore = playerScores.get(i).getScore();
-//                // Set j with the index of the player who has highest score
-//                j = i;
-//            }
-//        }
-//
-//        // Winner is initiated with the player number who has the highest score
-//        StringBuilder winner = new StringBuilder(Integer.toString(j + 1));
-//
-//        for (int i = 0; i < numberOfPLayers; i++){
-//            // If there are other player with the same score,
-//            // add the player number to the winner string
-//            if ((playerScores.get(i).getScore() == highestScore) && (i != j)){
-//                winner.append(", ").append(i + 1);
-//            }
-//        }
-//
-//        return winner.toString();
-
         if (playerScores.get(0).getScore() > playerScores.get(1).getScore()) {
             return "Player 1 won";
         }
@@ -148,8 +122,6 @@ public class Game{
             PlayerScore player = new PlayerScore(updatedGame.getPlayer(i));
             playerScores.add(player);
         }
-
-
     }
 
     public void setIconID(int iconID){

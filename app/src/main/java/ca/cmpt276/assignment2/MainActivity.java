@@ -7,8 +7,8 @@ import androidx.appcompat.widget.Toolbar;
 import ca.cmpt276.assignment2.model.Game;
 import ca.cmpt276.assignment2.model.GameManager;
 
-import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +19,23 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     private GameManager gameManager;
@@ -32,39 +45,98 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        setupNewGameFab();
-        setupListViewListener();
-        gameManager = GameManager.getInstance();
 
+        setupNewGameFab();
+
+        gameManager = GameManager.getInstance();
+        getLastGamesFromSharedPreference();
+        refreshGameManager();
+    }
+
+    private void refreshGameManager(){
+        for(Game game:games){
+            gameManager.add(game);
+        }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        setupListViewListener();
-        TextView noGames = (TextView) findViewById(R.id.noGames);
-        TextView tips = (TextView) findViewById(R.id.tips);
-        ImageView arrow = (ImageView) findViewById(R.id.imageView6);
-
         gameManager = GameManager.getInstance();
 
         populateGameList();
         populateListView();
+        setupListViewListener();
+
+        setupEmptyState();
+
+        storeGamesToSharedPreferences();
+    }
+
+
+
+    class LocalDateTimeSerializer implements JsonSerializer<LocalDateTime> {
+        @Override
+        public JsonElement serialize(LocalDateTime localDate, Type typeOfSrc, JsonSerializationContext context) {
+            DateTimeFormatter format = DateTimeFormatter.ofPattern("d::MMM::uuuu HH::mm::ss");
+            return new JsonPrimitive(localDate.format(format));
+        }
+        
+    }
+
+    class LocalDateTimeDeserializer implements JsonDeserializer<LocalDateTime>{
+        @Override
+        public LocalDateTime deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+                throws JsonParseException {
+                return LocalDateTime.parse(json.getAsString(),
+                        DateTimeFormatter.ofPattern("d::MMM::uuuu HH::mm::ss"));
+        }
+    }
+    private void storeGamesToSharedPreferences() {
+        SharedPreferences mPrefs = getSharedPreferences("shared preferences", MODE_PRIVATE);
+
+        SharedPreferences.Editor prefsEditor = mPrefs.edit();
+        Gson gson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer())
+                .create();
+        String json = gson.toJson(games);
+        prefsEditor.putString("myGames", json);
+        prefsEditor.apply();
+
+    }
+
+    private void getLastGamesFromSharedPreference() {
+        SharedPreferences mPrefs = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        Gson gson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer()).create();
+        String json = mPrefs.getString("myGames", "");
+        Type type = new TypeToken<ArrayList<Game>>() {
+        }.getType();
+        games = gson.fromJson(json, type);
+
+        if (games == null) {
+            games = new ArrayList<>();
+        }
+    }
+
+    private void setupEmptyState(){
+        TextView noGames = (TextView) findViewById(R.id.noGames);
+        TextView tips = (TextView) findViewById(R.id.tips);
+        ImageView arrow = (ImageView) findViewById(R.id.arrow);
+
         if(gameManager.isEmpty()){
             noGames.setVisibility(View.VISIBLE);
             tips.setVisibility(View.VISIBLE);
             arrow.setVisibility(View.VISIBLE);
         }
         else {
-
             noGames.setVisibility(View.GONE);
             tips.setVisibility(View.GONE);
             arrow.setVisibility(View.GONE);
         }
-
     }
 
     private void setupNewGameFab(){
@@ -72,17 +144,10 @@ public class MainActivity extends AppCompatActivity {
         newGameFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Intent intent = new Intent(GamesPlayedActivity.this, NewGameActivity.class);
                 Intent intent = NewGameActivity.makeIntent(MainActivity.this, -1, -1);
                 startActivity(intent);
             }
         });
-    }
-
-
-    public static Intent makeIntent(Context context){
-        Intent intent = new Intent(context, MainActivity.class);
-        return intent;
     }
 
     private void populateGameList(){
@@ -153,7 +218,6 @@ public class MainActivity extends AppCompatActivity {
             icon.setImageResource(currentGame.getIconID());
 
             return gamesView;
-//            return super.getView(position, convertView, parent);
         }
     }
 
